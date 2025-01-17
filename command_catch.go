@@ -18,6 +18,11 @@ func commandCatch(config *Config) error {
 	catchInt := rand.Intn(pokemonData.BaseExperience)
 	if catchInt <= 39 {
 		fmt.Printf("%s was caught!\n", pokemonName)
+		pokedex.pokemon[pokemonName] = pokemonData
+		fmt.Println("Current pokedex contains:")
+		for p := range pokedex.pokemon {
+			fmt.Println(p)
+		}
 	} else {
 		fmt.Printf("%s escaped!\n", pokemonName)
 	}
