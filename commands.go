@@ -29,7 +29,7 @@ func commandHelp(config *Config) error {
 }
 
 func commandMap(config *Config) error {
-	locationsRes, err := config.pokeapiClient.FetchLocationsRes(config.locationNext)
+	locationsRes, err := config.pokeapiClient.FetchLocationsRes(config.locationNext, config.pokeCache)
 	if err != nil {
 		return fmt.Errorf("could not fetch locations: %v", err)
 	}
@@ -48,7 +48,7 @@ func commandMapb(config *Config) error {
 		return errors.New("you're on the first page")
 	}
 
-	locationsRes, err := config.pokeapiClient.FetchLocationsRes(config.locationPrev)
+	locationsRes, err := config.pokeapiClient.FetchLocationsRes(config.locationPrev, config.pokeCache)
 	if err != nil {
 		return fmt.Errorf("could not fetch locations: %v", err)
 	}

@@ -2,7 +2,10 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
+
+	"github.com/pouyannc/pokedexcli/internal/pokecache"
 )
 
 type LocationAreas struct {
@@ -15,10 +18,21 @@ type LocationAreas struct {
 	} `json:"results"`
 }
 
-func (c *Client) FetchLocationsRes(pageURL *string) (LocationAreas, error) {
+func (c *Client) FetchLocationsRes(pageURL *string, cache *pokecache.Cache) (LocationAreas, error) {
 	url := baseURL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
+	}
+
+	cacheData, exists := cache.Get(url)
+	if exists {
+		var locations LocationAreas
+		err := json.Unmarshal(cacheData, &locations)
+		if err != nil {
+			return LocationAreas{}, err
+		}
+
+		return locations, nil
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -34,11 +48,18 @@ func (c *Client) FetchLocationsRes(pageURL *string) (LocationAreas, error) {
 	defer res.Body.Close()
 
 	var locations LocationAreas
-	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&locations)
+
+	data, err := io.ReadAll(res.Body)
 	if err != nil {
 		return LocationAreas{}, err
 	}
+
+	err = json.Unmarshal(data, &locations)
+	if err != nil {
+		return LocationAreas{}, err
+	}
+
+	cache.Add(url, data)
 
 	return locations, nil
 }
