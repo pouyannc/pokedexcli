@@ -7,14 +7,13 @@ import (
 	"strings"
 
 	"github.com/pouyannc/pokedexcli/internal/pokeapi"
-	"github.com/pouyannc/pokedexcli/internal/pokecache"
 )
 
 type Config struct {
 	pokeapiClient pokeapi.Client
-	pokeCache     *pokecache.Cache
 	locationNext  *string
 	locationPrev  *string
+	argument      string
 }
 
 func startRepl(cfg *Config) {
@@ -33,6 +32,9 @@ func startRepl(cfg *Config) {
 
 		command, ok := getCommands()[commandName]
 		if ok {
+			if len(words) > 1 {
+				cfg.argument = words[1]
+			}
 			err := command.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
