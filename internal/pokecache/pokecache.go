@@ -19,7 +19,7 @@ type cacheEntry struct {
 func NewCache(interval time.Duration) Cache {
 	cache := Cache{
 		mu:      &sync.Mutex{},
-		entries: map[string]cacheEntry{},
+		entries: make(map[string]cacheEntry),
 	}
 	go cache.reapLoop(interval)
 	return cache

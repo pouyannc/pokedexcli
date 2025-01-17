@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-
-	"github.com/pouyannc/pokedexcli/internal/pokecache"
 )
 
 type LocationAreas struct {
@@ -18,13 +16,13 @@ type LocationAreas struct {
 	} `json:"results"`
 }
 
-func (c *Client) FetchLocationsRes(pageURL *string, cache *pokecache.Cache) (LocationAreas, error) {
+func (c *Client) FetchLocationsRes(pageURL *string) (LocationAreas, error) {
 	url := baseURL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
 	}
 
-	cacheData, exists := cache.Get(url)
+	cacheData, exists := c.cache.Get(url)
 	if exists {
 		var locations LocationAreas
 		err := json.Unmarshal(cacheData, &locations)
@@ -59,7 +57,7 @@ func (c *Client) FetchLocationsRes(pageURL *string, cache *pokecache.Cache) (Loc
 		return LocationAreas{}, err
 	}
 
-	cache.Add(url, data)
+	c.cache.Add(url, data)
 
 	return locations, nil
 }
