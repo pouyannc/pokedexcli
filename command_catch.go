@@ -19,10 +19,7 @@ func commandCatch(config *Config) error {
 	if catchInt <= 39 {
 		fmt.Printf("%s was caught!\n", pokemonName)
 		pokedex.pokemon[pokemonName] = pokemonData
-		fmt.Println("Current pokedex contains:")
-		for p := range pokedex.pokemon {
-			fmt.Println(p)
-		}
+		fmt.Println("You may now inspect it with the inspect command.")
 	} else {
 		fmt.Printf("%s escaped!\n", pokemonName)
 	}
